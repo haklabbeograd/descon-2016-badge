@@ -49,24 +49,38 @@ SoftwareSerial sSerial(7, 6);
 
 void setup() {
   lcd.begin(84, 48);
-
-  // Write a piece of text on the first line...
-  lcd.setCursor(0, 0);
-  lcd.print("Awaiting input: ");
-
   sSerial.begin(9600);
-}
-
-void loop() {
-  // Just to show the program is alive...
-  static int counter = 0;
-
+  lcd.print("DESCON 2016");
   lcd.setCursor(0, 1);
-
+  lcd.print("Badger");
+  delay(2000);
+}
+String sAddr;
+String sBuffer;
+bool start = false;
+void loop() {
+  
+  
   if(sSerial.available()) {
-    lcd.print(sSerial.readString());
+    tone(12,4100,500);
+    sBuffer = sSerial.readString();
+    
+    if(sBuffer.substring(0,9) == "Ip Addr: " && start==false){
+      sAddr = sBuffer.substring(10);
+      lcd.setCursor(0, 3);
+      lcd.print(sAddr);
+      start = true;
+    }
+    else{
+      lcd.clear();
+      if(sAddr.length()!=0){
+        lcd.setCursor(0, 0);
+        lcd.print(sAddr);
+      }
+      lcd.setCursor(0, 1);
+      lcd.print(sBuffer);
+    } 
   }
-
   delay(200);
 }
 
